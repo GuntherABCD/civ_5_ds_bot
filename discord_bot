@@ -1,0 +1,60 @@
+import discord
+from discord.ext import commands
+from civ_logic import ALL_NATIONS, generate_nations
+from selectmenu import NationSelectView
+
+TOKEN = ''
+PREFIX = '/'
+intents = discord.Intents().all()
+
+bot = commands.Bot(command_prefix=PREFIX, intents=intents)
+
+@bot.command() 
+async def play(ctx, players_arg=None, count_arg=None):
+
+	if count_arg is None or players_arg is None:
+		await ctx.reply('Ошибка: Количество игроков или наций должно быть не пустым значением')
+		return
+
+	try:
+		count = int(count_arg)
+
+	except ValueError:
+		await ctx.reply('Ошибка: Количество наций должно быть натуральным числом (тип данных int)')
+		return
+	
+	try:
+		players = int(players_arg)
+
+	except ValueError:
+		await ctx.reply('Ошибка: Количество игроков должно быть натуральным числом (тип данных int)')
+		return
+
+	try:
+		
+		if count <= 0: 
+			raise ValueError("Количество наций должно быть больше нуля")
+		
+		if count > 25: 
+			raise ValueError(f"Количество наций не может быть больше 25")
+		
+		if players <= 0: 
+			raise ValueError("Количество игроков должно быть больше нуля")
+		
+		if players > 12: 
+			raise ValueError(f"Количество игроков не может быть больше 12")
+		
+		if count * players > len(ALL_NATIONS):
+			raise ValueError('Не хватает уникальных наций. Измените число игроков или количество наций')
+	
+		nations = generate_nations(count, players, ALL_NATIONS) 
+
+		for i in range(len(nations)):
+			view = NationSelectView(nations[i])
+			await ctx.send(view=view)
+	
+	except ValueError as va: 
+		await ctx.reply(f"Ошибка: {va}")
+		return
+
+bot.run(TOKEN)
