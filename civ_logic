@@ -1,0 +1,79 @@
+import random
+ALL_NATIONS: list[str]=[
+"Австрия",
+"Америка",
+"Англия",
+"Арабы",
+"Ассирия",
+"Ацтеки",
+"Бразилия",
+"Вавилон",
+"Византия",
+"Германия",
+"Голландия",
+"Греция",
+"Дания",
+"Египет",
+"Зулусы",
+"Индия",
+"Индонезия",
+"Инки",
+"Ирокезы",
+"Карфаген",
+"Кельты",
+"Китай",
+"Корея",
+"Майя",
+"Марокко",
+"Монголы",
+"Персия",
+"Полинезия",
+"Польша",
+"Португалия",
+"Рим",
+"Россия",
+"Сиам",
+"Сонгай",
+"Турция",
+"Франция",
+"Швеция",
+"Шошоны",
+"Эфиопия",
+"Япония"]
+
+def generate_nations(count: int, players:int, nations_list: list[str]) -> list[str]:
+
+    if count is None or players is None:
+        raise ValueError('Ошибка: Количество игроков или наций должно быть не пустым значением')
+    
+    if not isinstance(count, int):
+        raise TypeError("count должен иметь тип данных int")
+    
+    if count <=0:
+        raise ValueError("count должен быть больше нуля")
+    
+    if count > len(nations_list):
+        raise ValueError(f"count должен быть меньше или равен количеству доступных наций ({len(nations_list)})")
+    
+    if not isinstance(players, int):
+        raise TypeError("players должен иметь тип данных int")
+    
+    if players <=0:
+        raise ValueError("players должен быть больше нуля")
+    
+    if players > 12:
+        raise ValueError("значение players должно быть меньше или равным 12")
+    
+    if count * players > len(nations_list):
+        raise ValueError(f"Не хватает уникальных наций. Измените число игроков или количество наций")
+    
+    result = []
+
+    shuffled = random.sample(nations_list, count * players)
+    
+    for i in range(players):
+        start_idx = i * count
+        end_idx = start_idx + count
+        player_nations = shuffled[start_idx:end_idx]
+        result.append(player_nations)
+    return result
