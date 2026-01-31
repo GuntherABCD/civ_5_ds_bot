@@ -1,13 +1,14 @@
 import discord
 from discord.ext import commands
 from civ_logic import ALL_NATIONS, generate_nations
-from selectmenu import NationSelectView
 
 TOKEN = ''
 PREFIX = '/'
 intents = discord.Intents().all()
 
 bot = commands.Bot(command_prefix=PREFIX, intents=intents)
+
+
 
 @bot.command() 
 async def play(ctx, players_arg=None, count_arg=None):
@@ -35,8 +36,8 @@ async def play(ctx, players_arg=None, count_arg=None):
 		if count <= 0: 
 			raise ValueError("Количество наций должно быть больше нуля")
 		
-		if count > 25: 
-			raise ValueError(f"Количество наций не может быть больше 25")
+		if count > len(ALL_NATIONS): 
+			raise ValueError(f"Количество наций не может быть больше {len(ALL_NATIONS)}")
 		
 		if players <= 0: 
 			raise ValueError("Количество игроков должно быть больше нуля")
@@ -48,10 +49,12 @@ async def play(ctx, players_arg=None, count_arg=None):
 			raise ValueError('Не хватает уникальных наций. Измените число игроков или количество наций')
 	
 		nations = generate_nations(count, players, ALL_NATIONS) 
-
-		for i in range(len(nations)):
-			view = NationSelectView(nations[i])
-			await ctx.send(view=view)
+		result = []
+		for i, n in enumerate(nations, 1):
+			line = f"player {i}: {' / '.join(n)}"
+			result.append(line)
+		output = '\n'.join(result)
+		await ctx.reply(str(output))
 	
 	except ValueError as va: 
 		await ctx.reply(f"Ошибка: {va}")
