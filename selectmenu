@@ -1,7 +1,10 @@
 import discord
 
 class NationSelect(discord.ui.Select):
-    def __init__(self, nations: list[str], selected: set[str], locked: bool):
+    def __init__(self, nations: list[str], selected: set[str], locked: bool,placeholder: str = None):
+        if placeholder is None:
+            placeholder = "Выберите игровые нации"
+        
         options = []
 
         for n in nations:
@@ -14,9 +17,10 @@ class NationSelect(discord.ui.Select):
             )
 
         super().__init__(
-            placeholder="Выберите игровые нации",
+            placeholder=placeholder,
             options=options,
             max_values=2,
+            min_values=2,
 			disabled=locked
         )
 
@@ -35,13 +39,16 @@ class NationSelect(discord.ui.Select):
 
 
 class NationSelectView(discord.ui.View):
-    def __init__(self, nations: list[str]):
+    def __init__(self, nations: list[str],placeholder: str = None):
         super().__init__(timeout=None)
         self.nations = nations
         self.selected: set[str] = set()
         self.locked: bool = False
+        if placeholder is None:
+            placeholder = "Выберите игровые нации"
+        self.placeholder = placeholder
         self.refresh()
 
     def refresh(self):
         self.clear_items()
-        self.add_item(NationSelect(self.nations, self.selected, self.locked))
+        self.add_item(NationSelect(self.nations, self.selected, self.locked,self.placeholder))
