@@ -32,17 +32,17 @@ async def play(ctx, players_arg=None, count_arg=None):
 
 	try:
 		
-		if count <= 0: 
-			raise ValueError("Количество наций должно быть больше нуля")
+		if count <= 1: 
+			raise ValueError("Количество наций должно быть больше единицы")
 		
 		if count > 25: 
-			raise ValueError(f"Количество наций не может быть больше 25")
+			raise ValueError("Количество наций не может быть больше 25")
 		
 		if players <= 0: 
 			raise ValueError("Количество игроков должно быть больше нуля")
 		
 		if players > 12: 
-			raise ValueError(f"Количество игроков не может быть больше 12")
+			raise ValueError("Количество игроков не может быть больше 12")
 		
 		if count * players > len(ALL_NATIONS):
 			raise ValueError('Не хватает уникальных наций. Измените число игроков или количество наций')
@@ -51,7 +51,7 @@ async def play(ctx, players_arg=None, count_arg=None):
 
 		for i in range(len(nations)):
 			view = NationSelectView(nations[i])
-			await ctx.send(view=view)
+			await ctx.send(content=f"Для игрока {i+1}", view=view)
 	
 	except ValueError as va: 
 		await ctx.reply(f"Ошибка: {va}")
